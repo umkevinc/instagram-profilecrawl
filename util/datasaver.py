@@ -10,7 +10,7 @@ class Datasaver:
         check_folder(Settings.profile_location)
         if (Settings.profile_file_with_timestamp):
             file_profile = os.path.join(Settings.profile_location, username + '_' + datetime.datetime.now().strftime(
-                "%Y-%m-%d %H-%M-%S") + '.json')
+                "%Y-%m-%d_%H-%M-%S") + '.json')
         else:
             file_profile = os.path.join(Settings.profile_location, username + '.json')
 
@@ -22,7 +22,7 @@ class Datasaver:
         if (Settings.profile_commentors_file_with_timestamp):
             file_commenters = os.path.join(Settings.profile_commentors_location,
                                            username + "_commenters_" + datetime.datetime.now().strftime(
-                                               "%Y-%m-%d %H-%M-%S") + ".txt")
+                                               "%Y-%m-%d_%H-%M-%S") + ".txt")
         else:
             file_commenters = os.path.join(Settings.profile_commentors_location, username + "_commenters.txt")
 
