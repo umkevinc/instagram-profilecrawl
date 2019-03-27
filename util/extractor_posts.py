@@ -181,7 +181,7 @@ def extract_post_caption(user_comments, username):
             if username == user_commented['user']:
                 caption = user_commented['comment']
                 InstaLogger.logger().info("caption: " + caption)
-                tags = findall(r'#[A-Za-z0-9äöüß]*', caption)
+                tags = findall(r'#[A-Za-z0-9äöüß\u4e00-\u9fff]+', caption)
     except Exception as err:
         InstaLogger.logger().error("Error - getting caption")
         InstaLogger.logger().error(err)
