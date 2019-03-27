@@ -203,8 +203,8 @@ def extract_post_comments(browser, post):
     user_commented_list = []
     user_comments = []
     try:
-        if post.find_elements_by_tag_name('ul'):
-            comment_list = post.find_element_by_tag_name('ul')
+        if post.find_element_by_class_name('EtaWk'):
+            comment_list = post.find_element_by_class_name('EtaWk')
             comments = comment_list.find_elements_by_tag_name('li')
 
             if len(comments) > 1:
