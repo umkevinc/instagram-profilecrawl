@@ -205,7 +205,8 @@ def extract_post_comments(browser, post):
     try:
         if post.find_element_by_class_name('EtaWk'):
             comment_list = post.find_element_by_class_name('EtaWk')
-            comments = comment_list.find_elements_by_tag_name('li')
+            # print(comment_list.get_attribute('innerHTML'))
+            comments = comment_list.find_elements_by_class_name('gElp9')
 
             if len(comments) > 1:
                 # load hidden comments
@@ -254,6 +255,7 @@ def extract_post_comments(browser, post):
 
             # adding who commented into user_commented_list
             for comm in comments:
+                # print(comm.get_attribute('innerHTML'))
                 try:
                     user_commented = comm.find_element_by_tag_name('a').get_attribute("href").split('/')
                     user_commented_list.append(user_commented[3])
@@ -305,6 +307,8 @@ def extract_post_likers(browser, post, postlink, likes):
         likers_list = post.find_elements_by_xpath(xpath_identifier_user)
         print("LÄNGE " + str(len(likers_list)) + "")
         while len(likers_list) < likes:
+            if len(user_liked_list) >= Settings.max_likers_per_post:
+                break
 
             InstaLogger.logger().info(
                 "new likers in actual view: " + str(len(likers_list)) + " - list: " + str(
