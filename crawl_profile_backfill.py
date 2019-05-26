@@ -24,7 +24,7 @@ chromeOptions.add_experimental_option("prefs", prefs)
 chrome_options.add_argument('--dns-prefetch-disable')
 chrome_options.add_argument('--no-sandbox')
 chrome_options.add_argument('--lang=en-US')
-chrome_options.add_argument('--headless')
+# chrome_options.add_argument('--headless')
 chrome_options.add_argument("--incognito")
 chrome_options.add_experimental_option('prefs', {'intl.accept_languages': 'en-US'})
 
