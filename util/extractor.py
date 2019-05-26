@@ -18,6 +18,10 @@ import datetime
 from util.instalogger import InstaLogger
 from util.exceptions import PageNotFound404, NoInstaProfilePageFound
 
+from pytz import timezone
+import pytz
+
+
 
 def get_user_info(browser, username):
     """Get the basic user info from the profile screen"""
@@ -372,7 +376,9 @@ def extract_information(browser, username, limit_amount):
             InstaLogger.logger().error("Couldn't get user posts.")
 
     userinfo['posts'] = post_infos
-    userinfo['scraped'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    userinfo['scraped'] = datetime.datetime.now(tz=pytz.utc).strftime('%Y-%m-%dT%H:%M:%S.000Z')
+
     InstaLogger.logger().info("User " + username + " has " + str(len(user_commented_total_list)) + " comments.")
 
     # sorts the list by frequencies, so users who comment the most are at the top
@@ -380,8 +386,10 @@ def extract_information(browser, username, limit_amount):
     from operator import itemgetter, attrgetter
     counter = collections.Counter(user_commented_total_list)
     com = sorted(counter.most_common(), key=itemgetter(1, 0), reverse=True)
-    com = map(lambda x: [x[0]] * x[1], com)
-    user_commented_total_list = [item for sublist in com for item in sublist]
+    #com = map(lambda x: [x[0]] * x[1], com)
+    user_commented_total_list = ['%s,%s' % (item[0], item[1]) for item in com]
+    # user_commented_total_list = [item for sublist in com for item in sublist]
+    print(user_commented_total_list)
 
     # remove duplicates preserving order (that's why not using set())
     user_commented_list = []

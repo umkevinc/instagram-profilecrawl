@@ -342,7 +342,7 @@ def extract_post_likers(browser, post, postlink, likes):
                     "//div[contains(@class, 'i0EQd')]/div/div/div[1]")
                 browser.execute_script("arguments[0].scrollIntoView(true);", div_likebox_elem)
 
-            if tried_catch_likers > 10:
+            if tried_catch_likers > 3:
                 InstaLogger.logger().error("exit scrolling likers " + str(tried_catch_likers) + "x tries - liker list: " + str(
                     len(user_liked_list)) + " should be " + str(likes) + "")
                 break

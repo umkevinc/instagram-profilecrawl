@@ -8,7 +8,13 @@ import glob
 import os
 import shutil
 import sys
+from pytz import timezone
+import pytz
+import dateutil.parser
 
+
+
+INPUT_DIR = './NDATA/fastStats/*/'
 
 def move_file_to_done(profile_filename):
     check_done_folder()
@@ -24,46 +30,73 @@ def write_stats(profile):
     timestamp = profile['scraped']
     username = profile['username']
     print('Reading crawled profile info of {}'.format(username))
-    print(profile)
+    #print(profile)
 
-    # sum up likes and comments
-    likes = 0
-    comments = 0
+
+    post_info = []
     for post in profile['posts']:
-        likes += post['likes']['count']
-        comments += post['comments']['count']
+        post_date = (dateutil.parser.parse(post['date'])
+            .astimezone(timezone('US/Pacific'))
+            .strftime('%Y-%m-%d %H:%M:%S'))
 
+        stats = {
+            'url': post['url'],
+            'tags': ' '.join(post['tags']),
+            'likes': post['likes']['count'],
+            'comments': post['comments']['count'],
+            'preview_img': post['preview_img'],
+            #'caption': post['caption'],
+            'post_date': post_date
+        }
+        post_info.append(stats)
+
+    print(timestamp)
+    if 'T' in timestamp:
+        timestamp = (dateutil.parser.parse(timestamp)
+            .astimezone(timezone('US/Pacific'))
+            .strftime('%Y-%m-%d %H:%M:%S'))
+        print(timestamp)
+
+    global_info = {
+        'ts': timestamp,
+        'username': profile['username'],
+        'followers': profile['followers']['count'],
+        'following': profile['following']['count'],
+        'num_of_posts': profile['num_of_posts']
+    }
     # append collected stats to stats.csv
-    with open('stats.csv', 'a', newline='') as f_stats:
-        writer = csv.writer(f_stats)
-        writer.writerow([timestamp, profile['username'], profile['followers'], profile['following'],
-                         profile['num_of_posts'], likes, comments])
-        print('Added stats to stats.csv')
+    with open('stats.json', 'a', encoding='utf-8') as f_stats:
+        for stats in post_info:
+            stats.update(global_info)
+            f_stats.write(json.dumps(stats)+'\n')
+            # print('Added stats to stats.csv')
 
 
 def log_stats(username=None):
-    profile_folder = Settings.profile_location + '/'
-    if username is None:
-        searchFiles = profile_folder + '*.json'
-    else:
-        searchFiles = profile_folder + username + '*.json'
+    profile_folder = INPUT_DIR
+    searchFiles = profile_folder + '*.json'
 
     list_of_files = glob.glob(searchFiles)  # * means all if need specific format then *.csv
-    while list_of_files != []:
-
-        profile_filename = min(list_of_files, key=os.path.getctime)
+    for profile_filename in list_of_files:
         print(profile_filename)
         with open(profile_filename, 'r') as f_profile:
             profile = json.load(f_profile)
             write_stats(profile)
 
-        move_file_to_done(profile_filename)
+    # while list_of_files != []:
+    #     profile_filename = min(list_of_files, key=os.path.getctime)
+    #     print(profile_filename)
+    #     with open(profile_filename, 'r') as f_profile:
+    #         profile = json.load(f_profile)
+    #         #write_stats(profile)
 
-        try:
-            list_of_files = glob.glob(searchFiles)  # * means all if need specific format then *.csv
-        except:
-            print("Unexpected error:", sys.exc_info()[0])
-            # raise
+    #     # move_file_to_done(profile_filename)
+
+    #     try:
+    #         list_of_files = glob.glob(searchFiles)  # * means all if need specific format then *.csv
+    #     except:
+    #         print("Unexpected error:", sys.exc_info()[0])
+    #         # raise
 
 
 def check_done_folder():
@@ -81,5 +114,4 @@ def parse_args():
 
 
 if __name__ == '__main__':
-    args = parse_args()
-    log_stats(args.user)
+    log_stats()
