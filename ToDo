@@ -1,0 +1,23 @@
+0. profile page crawler
+1. Download image
+2. fix hourly crawler
+3. crawl hashtag
+4. create crawler API so that it's a service
+5. check how to deploy to ardunio
+
+
+ProfileStatsCrawler
+1. DailyStats
+- only stats page
+- crawl time based on an equation estimated by max(f(current followers), 1hr)
+- use elasticsearch to store all user info
+- user id should be interger / for scalability / machine take mode and filter
+2. Full
+
+
+
+
+5. create page view
+5.1. Top post over time
+5.2. each post has hourly view
+...etc.
