@@ -35,7 +35,6 @@ def get_all_user_names_from_file():
         usernames = [name.strip() for name in f.readlines() if not name.startswith('#')]
         return usernames
 
-
 try:
     browser = init_chromedriver(chrome_options, capabilities)
 except Exception as exc:
@@ -50,20 +49,14 @@ try:
         print('Extracting information from ' + username)
         information = []
         user_commented_list = []
-        try:
-            if len(Settings.login_username) != 0:
-                login(browser, Settings.login_username, Settings.login_password)
-            information, user_commented_list = extract_information(browser, username, Settings.limit_amount)
-        except:
-            print("Error with user " + username)
-            sys.exit(1)
+        # try:
+        information, user_commented_list = extract_information(browser, username, Settings.limit_amount)
+        # except:
+        #     print("Error with user " + username)
+        #     sys.exit(1)
 
         Datasaver.save_profile_json(username,information)
 
-        print ("Number of users who commented on their profile is ", len(user_commented_list),"\n")
-
-        Datasaver.save_profile_commenters_txt(username,user_commented_list)
-        print ("\nFinished. The json file and nicknames of users who commented were saved in profiles directory.\n")
 
 except KeyboardInterrupt:
     print('Aborted...')

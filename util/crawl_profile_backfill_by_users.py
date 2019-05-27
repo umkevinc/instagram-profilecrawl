@@ -3,8 +3,10 @@
 import sys
 from util.settings import Settings
 from util.datasaver import Datasaver
+from util.cli_helper import get_all_user_names
 
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.common.proxy import Proxy, ProxyType
@@ -29,13 +31,6 @@ chrome_options.add_experimental_option('prefs', {'intl.accept_languages': 'en-US
 capabilities = DesiredCapabilities.CHROME
 
 
-def get_all_user_names_from_file():
-    FILE_PATH = '../data/ids.txt'
-    with open(FILE_PATH, 'r') as f:
-        usernames = [name.strip() for name in f.readlines() if not name.startswith('#')]
-        return usernames
-
-
 try:
     browser = init_chromedriver(chrome_options, capabilities)
 except Exception as exc:
@@ -44,7 +39,7 @@ except Exception as exc:
 
 
 try:
-    usernames = get_all_user_names_from_file()
+    usernames = get_all_user_names()
 
     for username in usernames:
         print('Extracting information from ' + username)

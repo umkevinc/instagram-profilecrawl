@@ -354,7 +354,6 @@ def extract_information(browser, username, limit_amount):
 
     num_of_posts_to_do = 999999
 
-
     try:
         userinfo = get_user_info(browser, username)
         if limit_amount < 1:
